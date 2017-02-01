@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import HigherOrderFunction
 
 main :: IO ()
-main = someFunc
+main = putStrLn "Welcome to my thesis examples :)"

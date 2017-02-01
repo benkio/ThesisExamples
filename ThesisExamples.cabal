@@ -1,13 +1,13 @@
 name:                ThesisExamples
 version:             0.1.0.0
 synopsis:            Initial project template from stack
-description:         Please see README.md
+description:         This project contains the examples of functional concepts corelated to my thesis
 homepage:            https://github.com/githubuser/ThesisExamples#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2017 Author name here
+author:              Enrico Benini
+maintainer:          benkio89@gmail.com
+copyright:           2017 Enrico Benini
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Lib
+  exposed-modules:     HigherOrderFunction
   build-depends:       base >= 4.7 && < 5
   default-language:    Haskell2010
 
