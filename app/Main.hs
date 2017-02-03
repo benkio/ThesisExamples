@@ -1,6 +1,6 @@
 module Main where
 
-import HigherOrderFunction
+import HigherOrderFunctionCurryingClosure
 
 main :: IO ()
 main = putStrLn "Welcome to my thesis examples :)"
