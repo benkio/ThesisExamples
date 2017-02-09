@@ -28,6 +28,12 @@ convo = do
     c2 <- bye
     return $ c1 ++ c2
 
+convo5 = do
+    c1 <- do   name <- ask
+               return ("hello, " ++ name ++ "!")
+    c2 <- bye
+    return $ c1 ++ c2
+
 convo2 = hello >>= \h -> (bye >>= \b -> return $ h ++ b) -- Using the bind
 convo3 = hello >>= \h -> (\b -> h ++ b) <$> bye          -- Using the fmap
 convo4 = asks (const (++)) <*> hello <*> bye             -- Using the apply
