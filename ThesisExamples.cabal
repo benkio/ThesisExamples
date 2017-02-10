@@ -25,7 +25,8 @@ library
                        ListMonad,
                        StateMonad,
                        ReaderMonad,
-                       StateTMonad
+                       StateTMonad,
+                       IORef
   build-depends:       base >= 4.7 && < 5,
                        random,
                        transformers,
