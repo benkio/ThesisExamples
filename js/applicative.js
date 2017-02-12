@@ -44,7 +44,7 @@ assert(isEquivalent([].pure(2).apply(arrayOfFunc1).apply(arrayOfFunc2),
 
 /********************* APPLICATIVE EXAMPLE ***********************************/
 
-console.log("---------Applicative example-------------");
+console.log("---------Applicative example list-------------");
 
 console.log("The type applicative must have a way to lift a sigle value, eg in lists from 2 to: " + [].pure(2));
 
@@ -82,7 +82,6 @@ console.log("---------Applicative example state-------------");
 
 console.log("The type applicative must have a way to lift a sigle value, eg in state from 2 to: " + JSON.stringify( stack.pure(2).execState([0])  ));
 
-debugger;
 console.log("With applicative we can easily apply a state of function to a state of value(same state context): " + JSON.stringify( stack.apply(stack.pure(addOne)).execState([0]) ));
 
 console.log("Finally we can chain computations, applying other state of functions: " + JSON.stringify(stack.pure(2).apply(stack.pure(addOne)).apply(stack.pure(square)).execState([0])) );

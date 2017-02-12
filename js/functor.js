@@ -47,9 +47,9 @@ assert(isEquivalent(arrayExample.fmap(squareAndAddOne), arrayExample.fmap(square
 
 /********************* FUNCTOR EXAMPLE ***********************************/
 
-console.log("Initial Array value: " + arrayExample);
-
 console.log("---------Functor Example Array-------------")
+
+console.log("Initial Array value: " + arrayExample);
 
 console.log("Functor value after addOne and Square functions: " + arrayExample.fmap(addOne).fmap(square));
 
@@ -86,9 +86,9 @@ assert(isEquivalent(stack.fmap(squareAndAddOne), stack.fmap(square).fmap(addOne)
 
 /******************* STATE FUNCTOR EXAMPLE *******************************/
 
-console.log("Initial State value: " + JSON.stringify(stack.execState([0])));
-
 console.log("---------Functor Example State-------------")
+
+console.log("Initial State value: " + JSON.stringify(stack.execState([0])));
 
 var stackAfterFmap = stack.fmap(square).fmap(addOne);
 
