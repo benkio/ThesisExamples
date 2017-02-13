@@ -8,7 +8,7 @@ class Monad m where
 
 function Monad(){
     this.bind = function(monadFunc){};
-    this.then = function(monadValue){}; //optional but useful
+    this.then = function(monadValue){}; //optional but useful, can be created using the bind.
 }
 
 /************************ Array Monad Example *******************************************/
@@ -104,8 +104,28 @@ var stateThen3 = new State(function(stack) {
     return [1, stack];
 });
 
+var incCounter = new State(function(counter) {
+    return [counter +1, counter+1];
+});
+
+var decCounter = new State(function(counter) {
+    return [counter -1, counter-1];
+});
+
 console.log("------------------------- Monad State(stack) Example --------------------------");
 
 console.log(" Perform a monad computation using the stack: " + JSON.stringify(stack.bind(stateFunc1).bind(stateFunc1).bind(stateFunc2).then(stateThen).then(stateThen2).execState([1,2,3]) ) );
 
 console.log(" Perform another monad computation using the stack: " + JSON.stringify(stack.then(stateThen3).then(stateThen).bind(stateFunc1).execState([5])));
+
+console.log(" We can still apply some pure function inside the monad using its fmap function" + JSON.stringify(stack.then(stateThen3).fmap(addOne).fmap(square).bind(stateFunc2).execState([1,2,3])) );
+
+console.log("----------------------- Counter example (using the state monad) ------------------");
+
+console.log("inc two times: " + JSON.stringify( stack.then(incCounter).then(incCounter).execState(0)  ));
+
+console.log("inc two times and dec one: " + JSON.stringify( stack.then(incCounter).then(incCounter).then(decCounter).execState(0)  ));
+
+// At this point we can build some infrastructure to hide the binding and then and make that automatic based on type...ops there are no types in js :(
+// The do notation in Haskell knows if a function perform some effects based on the return type, so if it's a pure function(not returning a monad) it use the fmap to combine
+// Then the bind or the then is used. 
