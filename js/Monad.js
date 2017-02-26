@@ -132,18 +132,56 @@ console.log("inc two times and dec one: " + JSON.stringify( stack.then(incCounte
 
 /*************************  State Monad 110 Recognitor  *************************************/
 
-var machineFunction = function(state){
-    var output;
-    switch( state ){ //recognizer of 1 1 0
-    case "s1" : output = 0;break;
-    case "s2" : output = 0;break;
-    case "s3" : output = 0;break;
-    case "s4" : output = 1;break;
-    default: output = "0";
-    }
-    return  output;
+console.log("----------------------- 110 recognizer example (using the state monad transformer) ------------------");
+
+// Simulate the input from console, the return type would be IO Int
+var i = 0;
+var inputSimulator = function() {
+    i = i+1;
+    if (i < 100){
+        var x = Math.random() <= 0.5 ? "0" : "1";
+        console.log("input value: " + x);
+        return x;
+    } else {
+        console.log("exit");
+        return "x";
+    };
 };
 
+// HERE I HAVE TO INSERT THE MONAD TRANSFORMER IN ORDER TO PERFORM SOME OUTPUT
+
+// The innerMonadicFunc is a function from another monad. in our case IO
+var lift = function(innerMonadicFunc) {
+    return new State(function(state) {
+        var value = innerMonadicFunc();
+//        console.log("lift: " + value + ", " + state);
+        return [value, state];
+    });
+};
+
+// Take the function that operate only on the state and apply it.
+// The inner value is discarded
+var modify = function(functionStateModifier) {
+    return new State(function(state){
+//        console.log("modify: "+ " state " + state + " " + functionStateModifier(state));
+        return [undefined, functionStateModifier(state)];
+    });
+};
+
+//Throw away the inner value and replace it with the state.
+var get = new State(function(x){ return [x,x]; } );
+
+// State -> IO ()
+var machineFunction = function(state){
+    switch( state ){ //recognizer of 1 1 0
+    case "s1" : console.log(" state s1 output from MachineFunction: 0 ");break;
+    case "s2" : console.log(" state s2 output from MachineFunction: 0 ");break;
+    case "s3" : console.log(" state s3 output from MachineFunction: 0 ");break;
+    case "s4" : console.log(" state s4 output from MachineFunction: 1 ");break;
+    }
+};
+
+// a -> State -> State
 var stateFunction = function(v,state){ //recognizer: 1 1 0
     var newState;
     switch( state ){
@@ -151,6 +189,28 @@ var stateFunction = function(v,state){ //recognizer: 1 1 0
     case "s2" : newState = v == 0 ? "s1" : "s3";break;
     case "s3" : newState = v == 0 ? "s4" : "s1";break;
     case "s4" : newState = v == 0 ? "s1" : "s2";break;
-    default: newState = "s1";
+    };
+    return newState;
 };
+
+var recognizer = new State(function(state) {
+//    console.log("recognizer input state: " + state);
+    return lift(inputSimulator).bind(function(value){
+//        console.log("recognizer input value: "+ value);
+        if (value == 'x') return new State(function(s) { return [0, s];});
+        else {
+            //console.log(stateFunction);
+            return modify(function(state2) { return stateFunction(parseInt(value), state2); })
+                      .then(get)
+                      .bind(function(value2){
+//                          console.log("lift: " + value2 );
+                          return lift(function() { machineFunction(value2); });
+                      })
+                      .then(recognizer);
+        }
+    }).execState(state);
+});
+
+console.log("exec recognizer with state s1");
+recognizer.execState("s1");
 
