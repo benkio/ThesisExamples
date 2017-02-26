@@ -151,7 +151,7 @@ var inputSimulator = function() {
 // HERE I HAVE TO INSERT THE MONAD TRANSFORMER IN ORDER TO PERFORM SOME OUTPUT
 
 // The innerMonadicFunc is a function from another monad. in our case IO
-var lift = function(innerMonadicFunc) {
+State.prototype.lift = function(innerMonadicFunc) {
     return new State(function(state) {
         var value = innerMonadicFunc();
 //        console.log("lift: " + value + ", " + state);
@@ -195,7 +195,7 @@ var stateFunction = function(v,state){ //recognizer: 1 1 0
 
 var recognizer = new State(function(state) {
 //    console.log("recognizer input state: " + state);
-    return lift(inputSimulator).bind(function(value){
+    return get.lift(inputSimulator).bind(function(value){
 //        console.log("recognizer input value: "+ value);
         if (value == 'x') return new State(function(s) { return [0, s];});
         else {
@@ -204,7 +204,7 @@ var recognizer = new State(function(state) {
                       .then(get)
                       .bind(function(value2){
 //                          console.log("lift: " + value2 );
-                          return lift(function() { machineFunction(value2); });
+                          return get.lift(function() { machineFunction(value2); });
                       })
                       .then(recognizer);
         }
