@@ -50,7 +50,7 @@ assert(isEquivalent( ([1,2,3].bind(monadicFunc)).bind(monadicFunc2),
 
        console.log("The `then` operation will perform the previous calculation and then throw away the result leaving the then argument: " + [].ret(2).bind(monadicFunc).bind(monadicFunc).then([].ret(3)));
 
-       
+
 /**************************** State Monad Example  *****************************************/
 
 State.prototype.ret  = State.prototype.pure;
@@ -129,3 +129,28 @@ console.log("inc two times and dec one: " + JSON.stringify( stack.then(incCounte
 // At this point we can build some infrastructure to hide the binding and then and make that automatic based on type...ops there are no types in js :(
 // The do notation in Haskell knows if a function perform some effects based on the return type, so if it's a pure function(not returning a monad) it use the fmap to combine
 // Then the bind or the then is used. 
+
+/*************************  State Monad 110 Recognitor  *************************************/
+
+var machineFunction = function(state){
+    var output;
+    switch( state ){ //recognizer of 1 1 0
+    case "s1" : output = 0;break;
+    case "s2" : output = 0;break;
+    case "s3" : output = 0;break;
+    case "s4" : output = 1;break;
+    default: output = "0";
+    }
+    return  output;
+};
+
+var stateFunction = function(v,state){ //recognizer: 1 1 0
+    var newState;
+    switch( state ){
+    case "s1" : newState = v == 0 ? "s1" : "s2";break;
+    case "s2" : newState = v == 0 ? "s1" : "s3";break;
+    case "s3" : newState = v == 0 ? "s4" : "s1";break;
+    case "s4" : newState = v == 0 ? "s1" : "s2";break;
+    default: newState = "s1";
+};
+
