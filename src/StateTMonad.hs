@@ -34,6 +34,7 @@ machineFunction S1 = putStrLn "0"
 machineFunction S2 = putStrLn "0"
 machineFunction S3 = putStrLn "0"
 machineFunction S4 = putStrLn "1"
+
 stateFunction :: Int -> OneOneZeroState -> OneOneZeroState
 stateFunction x S1 = if x == 0 then S1  else S2
 stateFunction x S2 = if x == 0 then S1  else S3
