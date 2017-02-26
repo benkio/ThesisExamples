@@ -27,28 +27,27 @@ guessSession answer =
 
 ------------------- 110 recognizer --------------------------
 
-data 110State = S1 | S2 | S3 | S4
+data OneOneZeroState = S1 | S2 | S3 | S4
 
-machineFunction :: 110State -> IO Unit
-machineFunction S1 = putStrLn 0
-machineFunction S2 = putStrLn 0
-machineFunction S3 = putStrLn 0
-machineFunction S4 = putStrLn 1
+machineFunction :: OneOneZeroState -> IO ()
+machineFunction S1 = putStrLn "0"
+machineFunction S2 = putStrLn "0"
+machineFunction S3 = putStrLn "0"
+machineFunction S4 = putStrLn "1"
+stateFunction :: Int -> OneOneZeroState -> OneOneZeroState
+stateFunction x S1 = if x == 0 then S1  else S2
+stateFunction x S2 = if x == 0 then S1  else S3
+stateFunction x S3 = if x == 0 then S4  else S1
+stateFunction x S4 = if x == 0 then S1  else S2
 
-stateFunction :: Int -> 110State -> 110State
-machineFunction x S1 = if x == 0 then S1  else S2
-machineFunction x S2 = if x == 0 then S1  else S3
-machineFunction x S3 = if x == 0 then S4  else S1
-machineFunction x S4 = if x == 0 then S1  else S2
+recognizer :: StateT OneOneZeroState IO Int
+recognizer = lift getLine >>=
+  \input -> if (input == "x")
+              then return 0
+              else  modify (stateFunction (read input))   >>
+                    get                                   >>=
+                    \s -> lift (machineFunction s)        >>
+                    recognizer
 
-recognizer :: StateT 110State IO Int
-recognizer = do
-  input <- lift getLine -- input from the recognizer
-  if (input == 'x') return $ get
-  modify (stateFunction input)
-  (v, s) <- get
-  lift $ machineFunction s
-  recognizer
-
-recognizerMain :: IO Unit
-recognizerMain = execStateT recognizer S1
+recognizerMain :: IO ()
+recognizerMain = execStateT recognizer S1 >> return ()
