@@ -59,14 +59,15 @@ console.log("Same previous result using directly the map operation: " + arrayExa
 
 var stack = new State(function(initialStack){ return [1, initialStack]; } );
 
+// StateMonad(f: State => (value, state))
 function State(stateFunc){
     this.stateFunc = stateFunc;
     this.fmap = function(func){ //with fmap there not effects on the state, it's only passed along the computation
         return (new State(function(state){
             var [a, newState]   = stateFunc(state);
             var newValue = func(a);
-            return [newValue, newState]
-        }))
+            return [newValue, newState];
+        }));
     };
     this.execState = function(state) {
         return this.stateFunc(state);

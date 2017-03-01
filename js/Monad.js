@@ -211,6 +211,46 @@ var recognizer = new State(function(state) {
     }).execState(state);
 });
 
+//recognizer.execState("s1");
+
+
+/************************ RECOGNIZER 110 with input provided at function call  **********************************/
+
+
+var mtnFunc = function(state){
+    switch( state ){ //recognizer of 1 1 0
+    case "s1" : return 0;
+    case "s2" : return 0;
+    case "s3" : return 0;
+    case "s4" : return 1;
+    }
+};
+
+var stFunc = function(v,state){ //recognizer: 1 1 0
+    var newState;
+    switch( state ){
+    case "s1" : newState = v == 0 ? "s1" : "s2";break;
+    case "s2" : newState = v == 0 ? "s1" : "s3";break;
+    case "s3" : newState = v == 0 ? "s4" : "s1";break;
+    case "s4" : newState = v == 0 ? "s1" : "s2";break;
+    };
+    return newState;
+};
+
+var outsideInputFunc = function(v) {
+    return new State(function(state) {
+        return [mtnFunc(stFunc(v, state)), stFunc(v, state)];
+    });
+};
+
+var one  = outsideInputFunc(1);
+var zero = outsideInputFunc(0);
+var initialState = new State(function(initialStack){ return [0, initialStack]; } );
+
+var recognizer2 = new State(function(state){
+    return initialState.then(one).then(one).then(zero).execState(state); // not executed yet
+});
+
 console.log("exec recognizer with state s1");
-recognizer.execState("s1");
+console.log(recognizer2.execState("s1")); // executed => [1, s4]
 
